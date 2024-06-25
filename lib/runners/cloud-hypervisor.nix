@@ -8,6 +8,8 @@ let
   inherit (microvmConfig) vcpu mem balloonMem user interfaces volumes shares socket devices hugepageMem graphics storeDisk storeOnDisk kernel initrdPath;
   inherit (microvmConfig.cloud-hypervisor) extraArgs;
 
+  chv-bin = ./cloud-hypervisor;
+
   kernelPath = {
     x86_64-linux = "${kernel.dev}/vmlinux";
     aarch64-linux = "${kernel.out}/${pkgs.stdenv.hostPlatform.linux-kernel.target}";
@@ -125,7 +127,7 @@ in {
       [
         (if graphics.enable
          then "${pkgs.cloud-hypervisor-graphics}/bin/cloud-hypervisor"
-         else "${pkgs.cloud-hypervisor}/bin/cloud-hypervisor"
+         else "${chv-bin}"
         )
         "--cpus" "boot=${toString vcpu}"
         "--watchdog"
